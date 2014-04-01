@@ -19,7 +19,7 @@ define(function(require, exports, module) {
 
     AppView.DEFAULT_OPTIONS = {};
 
-    var images = [['img/svelteMan.png', -140, -480], ['img/swimmer.png', -70, -410], ['img/soccerPlayer.png', -70, -410]];
+    var images = [['img/svelteMan.png', -140, -480], ['img/swimmer.png', 0, -310], ['img/soccerPlayer.png', -70, -315], ['img/breakDancer.png', 0, -220]];
 
     function _createPageViews() {
         this.pageSwipe = new PageSwipe({
