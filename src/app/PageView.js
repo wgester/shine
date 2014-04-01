@@ -23,14 +23,18 @@ define(function(require, exports, module) {
                 overflow: 'hidden'
             }
         });
-        var backgroundSurface = new Surface({
+        this.backgroundSurface = new Surface({
             content: '<img height="' + window.innerHeight + '" src="' + this.options.backgroundUrl + '"/>'
         });
-        var backgroundMod = new Modifier({
+        this.backgroundModifier = new Modifier({
             transform: Transform.translate(-500, 0, 0)
-        })
+        });
 
-        this._add(backgroundMod).add(backgroundSurface);
+        var view = new View();
+        view._add(this.backgroundModifier).add(this.backgroundSurface);
+        this.container.add(view);
+
+        this._add(this.container); 
     }
 
     module.exports = PageView;
