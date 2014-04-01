@@ -169,10 +169,12 @@ define(function(require, exports, module) {
                 var nodeSize = this.node.getSize ? this.node.getSize() : this._contextSize;
                 // parameters to determine when to switch
 
-                var posNext = this.getPosition() > 0.5*_sizeForDir.call(this, nodeSize);
+                var posNext = this.getPosition() >= 0.5*_sizeForDir.call(this, nodeSize);
+                var posPrev = this.getPosition() <= -0.5*_sizeForDir.call(this, nodeSize);
 
                 if(posNext) this.goToNextPage();
-                else this.goToPreviousPage();
+                else if(posPrev) this.goToPreviousPage();
+                else _attachPageSpring.call(this);
                 // no need to handle prev case since the origin is already the 'previous' page
             }
         }
@@ -448,7 +450,6 @@ define(function(require, exports, module) {
         _handlePagination.call(this);
 
         if(this.options.paginated && (this._lastFrameNode !== this.node)) {
-            console.log(this.node)
             this.eventOutput.emit('pageChange');
             this._lastFrameNode = this.node;
         }
