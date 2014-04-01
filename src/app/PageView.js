@@ -23,26 +23,26 @@ define(function(require, exports, module) {
                 overflow: 'hidden'
             }
         });
+        var view = new View();
         this.backgroundSurface = new Surface({
             content: '<img height="' + window.innerHeight + '" src="' + this.options.backgroundUrl + '"/>'
         });
         this.backgroundModifier = new Modifier({
-            transform: Transform.translate(-140, 0, 0)
+            transform: Transform.translate(this.options.start, 0, 0)
         });
-
-        var view = new View();
         view._add(this.backgroundModifier).add(this.backgroundSurface);
         this.container.add(view);
+        this.backgroundSurface.pipe(this._eventOutput);
 
         this._add(this.container); 
     }
 
     PageView.prototype.transition = function(){
-        this.backgroundModifier.setTransform(Transform.translate(-480, 0, 0), {duration: 3000});
+        this.backgroundModifier.setTransform(Transform.translate(this.options.end, 0, 0), {duration: 3000});
     }
 
     PageView.prototype.resetTransition = function() {
-        this.backgroundModifier.setTransform(Transform.translate(-140, 0, 0));
+        this.backgroundModifier.setTransform(Transform.translate(this.options.start, 0, 0));
     }
 
     module.exports = PageView;
