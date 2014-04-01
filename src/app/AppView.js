@@ -24,7 +24,7 @@ define(function(require, exports, module) {
     function _createPageViews() {
         this.scrollView = new ScrollView({
             direction: 'x',
-            pagination: true
+            paginated: true
         });
         for (var i = 0; i < images.length; i++) {
             var pageView = new PageView({
