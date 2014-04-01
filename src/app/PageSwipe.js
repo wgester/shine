@@ -98,30 +98,11 @@ define(function(require, exports, module) {
         if(event.count === undefined) this.touchCount = 1;
 
         _detachAgents.call(this);
-        this.setVelocity(0);
-        this._touchVelocity = 0;
-        this._earlyEnd = false;
     }
 
     function _handleMove(event) {
         var pos = -event.p;
-        var vel = -event.v;
-        if(this._onEdge && event.slip) {
-            if((vel < 0 && this._onEdge < 0) || (vel > 0 && this._onEdge > 0)) {
-                if(!this._earlyEnd) {
-                    _handleEnd.call(this, event);
-                    this._earlyEnd = true;
-                }
-            }
-            else if(this._earlyEnd && (Math.abs(vel) > Math.abs(this.particle.getVelocity()[0]))) {
-                _handleStart.call(this, event);
-            }
-        }
-        if(this._earlyEnd) return;
-        this._touchVelocity = vel;
-
-        if(event.slip) this.setVelocity(vel);
-        else this.setPosition(pos);
+        this.setPosition(pos);
     }
 
     function _handleEnd(event) {
@@ -130,13 +111,6 @@ define(function(require, exports, module) {
             _detachAgents.call(this);
             if(this._onEdge) this._springAttached = true;
             _attachAgents.call(this);
-            var vel = -event.v;
-            var speedLimit = this.options.speedLimit;
-            if(event.slip) speedLimit *= this.options.edgeGrip;
-            if(vel < -speedLimit) vel = -speedLimit;
-            else if(vel > speedLimit) vel = speedLimit;
-            this.setVelocity(vel);
-            this._touchVelocity = undefined;
         }
     }
 
@@ -194,7 +168,6 @@ define(function(require, exports, module) {
             }
             else atEdge = true;
         }
-        if(this.getVelocity() === 0 && Math.abs(this._masterOffset) > (_getClipSize.call(this) + this.options.margin)) this._masterOffset = 0;
     }
 
     function _handleEdge(edgeDetected) {
@@ -207,8 +180,7 @@ define(function(require, exports, module) {
         }
         else if(this._onEdge && !edgeDetected) {
             this.sync.setOptions({scale: 1});
-            if(this._springAttached && Math.abs(this.getVelocity()) < 0.001) {
-                this.setVelocity(0);
+            if(this._springAttached) {
                 this.setPosition(this._springPosition);
                 // reset agents, detaching the spring
                 _detachAgents.call(this);
@@ -291,25 +263,6 @@ define(function(require, exports, module) {
     };
 
     /**
-     * Returns the Scrollview instance's velocity.
-     * @method getVelocity
-     * @return {Number} The velocity.
-     */
-    Scrollview.prototype.getVelocity = function() {
-        return this.touchCount ? this._touchVelocity : this.particle.getVelocity()[0];
-    };
-
-    /**
-     * Sets the Scrollview instance's velocity. Until affected by input or another call of setVelocity
-     * the Scrollview instance will scroll at the passed-in velocity.
-     * @method setVelocity
-     * @param {number} v TThe magnitude of the velocity.
-     */
-    Scrollview.prototype.setVelocity = function(v) {
-        this.particle.setVelocity([v, 0, 0]);
-    };
-
-    /**
      * Patches the Scrollview instance's options with the passed-in ones.
      * @method setOptions
      * @param {Options} options An object of configurable options for the Scrollview instance.
@@ -389,9 +342,7 @@ define(function(require, exports, module) {
         var nextNode = this.node.getNext ? this.node.getNext() : null;
         if(nextNode) {
             var positionModification = _sizeForDir.call(this, this.node.getSize());
-            this.node._.array[this.node.index].resetTransition();
             this.node = nextNode;
-            this.node._.array[this.node.index].transition();
             this._springPosition += positionModification;
             _shiftOrigin.call(this, -positionModification);
             _attachPageSpring.call(this);
@@ -524,6 +475,7 @@ define(function(require, exports, module) {
         _handlePagination.call(this);
 
         if(this.options.paginated && (this._lastFrameNode !== this.node)) {
+            console.log(this.node)
             this.eventOutput.emit('pageChange');
             this._lastFrameNode = this.node;
         }

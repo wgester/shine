@@ -12,6 +12,7 @@ define(function(require, exports, module) {
         this.pages = [];
 
         _createPageViews.call(this);
+        _pageSwipeEventHandler.call(this);
     }
 
     AppView.prototype = Object.create(View.prototype);
@@ -38,6 +39,10 @@ define(function(require, exports, module) {
         }
         this.pageSwipe.sequenceFrom(this.pages);
         this._add(this.pageSwipe);
+    }
+
+    function _pageSwipeEventHandler() {
+        this.pageSwipe.eventOutput.on('pageChange', function() {console.log('swipe')});
     }
 
     module.exports = AppView;
