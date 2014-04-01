@@ -27,7 +27,7 @@ define(function(require, exports, module) {
             content: '<img height="' + window.innerHeight + '" src="' + this.options.backgroundUrl + '"/>'
         });
         this.backgroundModifier = new Modifier({
-            transform: Transform.translate(-500, 0, 0)
+            transform: Transform.translate(-140, 0, 0)
         });
 
         var view = new View();
@@ -35,6 +35,14 @@ define(function(require, exports, module) {
         this.container.add(view);
 
         this._add(this.container); 
+    }
+
+    PageView.prototype.transition = function(){
+        this.backgroundModifier.setTransform(Transform.translate(-480, 0, 0), {duration: 3000});
+    }
+
+    PageView.prototype.resetTransition = function() {
+        this.backgroundModifier.setTransform(Transform.translate(-140, 0, 0));
     }
 
     module.exports = PageView;

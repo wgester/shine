@@ -19,7 +19,7 @@ define(function(require, exports, module) {
 
     function _createPageView() {
         this.pageView = new PageView({backgroundUrl : 'img/svelteMan.png'});
-
+        window.page = this.pageView;
         this._add(this.pageView);
     }
 
