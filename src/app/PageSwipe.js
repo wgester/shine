@@ -53,7 +53,6 @@ define(function(require, exports, module) {
         this._springAttached = false;
         this._onEdge = 0; // -1 for top, 1 for bottom
         this._springPosition = 0;
-        this._touchVelocity = undefined;
         this._earlyEnd = false;
 
         this._masterOffset = 0; // minimize writes
@@ -143,32 +142,6 @@ define(function(require, exports, module) {
         this.spring.setOptions({anchor: [this._springPosition, 0, 0]});
     }
 
-    function _normalizeState() {
-        var atEdge = false;
-        while(!atEdge && this.getPosition() < 0) {
-            var prevNode = this.node.getPrevious ? this.node.getPrevious() : null;
-            if(prevNode) {
-                var prevSize = prevNode.getSize ? prevNode.getSize() : this._contextSize;
-                var dimSize = _sizeForDir.call(this, prevSize);
-                _shiftOrigin.call(this, dimSize);
-                this._masterOffset -= dimSize;
-                this.node = prevNode;
-            }
-            else atEdge = true;
-        }
-        var size = (this.node && this.node.getSize) ? this.node.getSize() : this._contextSize;
-        while(!atEdge && this.getPosition() >= _sizeForDir.call(this, size)) {
-            var nextNode = this.node.getNext ? this.node.getNext() : null;
-            if(nextNode) {
-                var dimSize = _sizeForDir.call(this, size);
-                _shiftOrigin.call(this, -dimSize);
-                this._masterOffset += dimSize;
-                this.node = nextNode;
-                size = this.node.getSize ? this.node.getSize() : this._contextSize;
-            }
-            else atEdge = true;
-        }
-    }
 
     function _handleEdge(edgeDetected) {
         if(!this._onEdge && edgeDetected) {
@@ -199,7 +172,7 @@ define(function(require, exports, module) {
                 var posNext = this.getPosition() > 0.5*_sizeForDir.call(this, nodeSize);
 
                 if(posNext) this.goToNextPage();
-                else _attachPageSpring.call(this);
+                else this.goToPreviousPage();
                 // no need to handle prev case since the origin is already the 'previous' page
             }
         }
@@ -412,7 +385,7 @@ define(function(require, exports, module) {
             }
         }
 
-        _normalizeState.call(this);
+        // _normalizeState.call(this);
         var pos = this.getPosition();
         var scrollTransform = this._masterOutputFunction(-(pos + this._masterOffset));
 
