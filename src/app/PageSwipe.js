@@ -220,15 +220,13 @@ define(function(require, exports, module) {
 
     function _handlePagination() {
         if(this.touchCount == 0 && !this._springAttached && !this._onEdge) {
-            console.log(this.node.getSize())
-            if(this.options.paginated && Math.abs(this.getVelocity()) < this.options.pageStopSpeed) {
+            if(this.options.paginated) {
                 var nodeSize = this.node.getSize ? this.node.getSize() : this._contextSize;
                 // parameters to determine when to switch
-                var velSwitch = Math.abs(this.getVelocity()) > this.options.pageSwitchSpeed;
-                var velNext = this.getVelocity() > 0;
+
                 var posNext = this.getPosition() > 0.5*_sizeForDir.call(this, nodeSize);
 
-                if((velSwitch && velNext)|| (!velSwitch && posNext)) this.goToNextPage();
+                if(posNext) this.goToNextPage();
                 else _attachPageSpring.call(this);
                 // no need to handle prev case since the origin is already the 'previous' page
             }
@@ -391,7 +389,9 @@ define(function(require, exports, module) {
         var nextNode = this.node.getNext ? this.node.getNext() : null;
         if(nextNode) {
             var positionModification = _sizeForDir.call(this, this.node.getSize());
+            this.node._.array[this.node.index].resetTransition();
             this.node = nextNode;
+            this.node._.array[this.node.index].transition();
             this._springPosition += positionModification;
             _shiftOrigin.call(this, -positionModification);
             _attachPageSpring.call(this);
