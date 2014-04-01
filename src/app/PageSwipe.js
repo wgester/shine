@@ -1,12 +1,3 @@
-/* This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- *
- * Owner: felix@famo.us
- * @license MPL 2.0
- * @copyright Famous Industries, Inc. 2014
- */
-
 define(function(require, exports, module) {
     var Utility = require('famous/utilities/Utility');
 
@@ -23,39 +14,6 @@ define(function(require, exports, module) {
     var Entity = require('famous/core/Entity');
     var OptionsManager = require('famous/core/OptionsManager');
 
-    /**
-     * Scrollview will lay out a collection of renderables sequentially in the specified direction, and will
-     * allow you to scroll through them with mousewheel or touch events.
-     * @class Scrollview
-     * @constructor
-     * @param {Options} [options] An object of configurable options.
-     * @param {Number} [direction=Utility.Direction.Y] Using the direction helper found in the famous Utility
-     * module, this option will lay out the Scrollview instance's renderables either horizontally
-     * (x) or vertically (y). Utility's direction is essentially either zero (X) or one (Y), so feel free
-     * to just use integers as well.
-     * @param {Boolean} [rails=true] When true, Scrollview's genericSync will only process input in it's primary access.
-     * @param {Number} [clipSize=undefined] The size of the area (in pixels) that Scrollview will display content in.
-     * @param {Number} [margin=undefined] The size of the area (in pixels) that Scrollview will process renderables' associated calculations in.
-     * @param {Number} [friction=0.001] Input resistance proportional to the velocity of the input.
-     * Controls the feel of the Scrollview instance at low velocities.
-     * @param {Number} [drag=0.0001] Input resistance proportional to the square of the velocity of the input.
-     * Affects Scrollview instance more prominently at high velocities.
-     * @param {Number} [edgeGrip=0.5] A coefficient for resistance against after-touch momentum.
-     * @param {Number} [egePeriod=300] Sets the period on the spring that handles the physics associated
-     * with hitting the end of a scrollview.
-     * @param {Number} [edgeDamp=1] Sets the damping on the spring that handles the physics associated
-     * with hitting the end of a scrollview.
-     * @param {Boolean} [paginated=false] A paginated scrollview will scroll through items discretely
-     * rather than continously.
-     * @param {Number} [pagePeriod=500] Sets the period on the spring that handles the physics associated
-     * with pagination.
-     * @param {Number} [pageDamp=0.8] Sets the damping on the spring that handles the physics associated
-     * with pagination.
-     * @param {Number} [pageStopSpeed=Infinity] The threshold for determining the amount of velocity
-     * required to trigger pagination. The lower the threshold, the easier it is to scroll continuosly.
-     * @param {Number} [pageSwitchSpeed=1] The threshold for momentum-based velocity pagination.
-     * @param {Number} [speedLimit=10] The highest scrolling speed you can reach.
-     */
     function Scrollview(options) {
         this.options = Object.create(Scrollview.DEFAULT_OPTIONS);
         this._optionsManager = new OptionsManager(this.options);
@@ -118,7 +76,7 @@ define(function(require, exports, module) {
     }
 
     Scrollview.DEFAULT_OPTIONS = {
-        direction: Utility.Direction.Y,
+        direction: Utility.Direction.X,
         rails: true,
         clipSize: undefined,
         margin: undefined,
@@ -262,9 +220,9 @@ define(function(require, exports, module) {
 
     function _handlePagination() {
         if(this.touchCount == 0 && !this._springAttached && !this._onEdge) {
+            console.log(this.node.getSize())
             if(this.options.paginated && Math.abs(this.getVelocity()) < this.options.pageStopSpeed) {
                 var nodeSize = this.node.getSize ? this.node.getSize() : this._contextSize;
-
                 // parameters to determine when to switch
                 var velSwitch = Math.abs(this.getVelocity()) > this.options.pageSwitchSpeed;
                 var velNext = this.getVelocity() > 0;

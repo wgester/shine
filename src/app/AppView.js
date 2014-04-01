@@ -3,7 +3,7 @@ define(function(require, exports, module) {
     var Modifier        = require('famous/core/Modifier');
     var Transform       = require('famous/core/Transform');
     var View            = require('famous/core/View');
-    var ScrollView      = require('famous/views/ScrollView');
+    var PageSwipe      = require('./PageSwipe');
 
     var PageView        = require('./PageView');
 
@@ -19,10 +19,10 @@ define(function(require, exports, module) {
 
     AppView.DEFAULT_OPTIONS = {};
 
-    var images = [['img/svelteMan.png', -140, -480], ['img/swimmer.png', -70, -410]];
+    var images = [['img/svelteMan.png', -140, -480], ['img/swimmer.png', -70, -410], ['img/soccerPlayer.png', -70, -410]];
 
     function _createPageViews() {
-        this.scrollView = new ScrollView({
+        this.pageSwipe = new PageSwipe({
             direction: 'x',
             paginated: true
         });
@@ -32,12 +32,12 @@ define(function(require, exports, module) {
                 start : images[i][1],
                 end : images[i][2]
             });
-            this.scrollView.pipe(pageView);
-            pageView._eventOutput.pipe(this.scrollView);
+            this.pageSwipe.pipe(pageView);
+            pageView._eventOutput.pipe(this.pageSwipe);
             this.pages.push(pageView);
         }
-        this.scrollView.sequenceFrom(this.pages);
-        this._add(this.scrollView);
+        this.pageSwipe.sequenceFrom(this.pages);
+        this._add(this.pageSwipe);
     }
 
     module.exports = AppView;
