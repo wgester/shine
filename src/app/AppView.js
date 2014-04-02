@@ -1,9 +1,10 @@
 define(function(require, exports, module) {
     var Surface         = require('famous/core/Surface');
+    var ImageSurface    = require('famous/surfaces/ImageSurface');
     var Modifier        = require('famous/core/Modifier');
     var Transform       = require('famous/core/Transform');
     var View            = require('famous/core/View');
-    var PageSwipe      = require('./PageSwipe');
+    var PageSwipe       = require('./PageSwipe');
 
     var PageView        = require('./PageView');
 
@@ -55,25 +56,27 @@ define(function(require, exports, module) {
     };
 
     function _addFacebookOverlay() {
-        var facebook = new Surface({
-            content: '<img height="50" width="120" src="img/facebook.png"/>',
-            size: [50,120]
-            });
-        var facebookModifier = new Modifier({
-            transform: Transform.translate(170, 470, 0)
-        });
-        console.log('add border-radius')
-        this._add(facebookModifier).add(facebook);
-    };
-
-    function _addEmailOverlay() {
-        var email = new Surface({
-            content: '<img height="50" width="120" src="img/email.png"/>',
-            size: [50,120],
+        var facebook = new ImageSurface({
+            size: [120,50],
             properties: {
                 borderRadius: '3px'
             }
         });
+        facebook.setContent('img/facebook.png');
+        var facebookModifier = new Modifier({
+            transform: Transform.translate(170, 470, 0)
+        });
+        this._add(facebookModifier).add(facebook);
+    };
+
+    function _addEmailOverlay() {
+        var email = new ImageSurface({
+            size: [120,50],
+            properties: {
+                borderRadius: '3px'
+            }
+        });
+        email.setContent('img/email.png');
         var emailModifier = new Modifier({
             transform: Transform.translate(28, 470, 0)
         });
