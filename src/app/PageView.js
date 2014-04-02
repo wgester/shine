@@ -23,16 +23,29 @@ define(function(require, exports, module) {
                 overflow: 'hidden'
             }
         });
-        var view = new View();
+        var backgroundView = new View();
         this.backgroundSurface = new Surface({
             content: '<img height="' + window.innerHeight + '" src="' + this.options.backgroundUrl + '"/>'
         });
         this.backgroundModifier = new Modifier({
             transform: Transform.translate(this.options.start, 0, 0)
         });
-        view._add(this.backgroundModifier).add(this.backgroundSurface);
-        this.container.add(view);
-        this.backgroundSurface.pipe(this._eventOutput);
+        backgroundView._add(this.backgroundModifier).add(this.backgroundSurface);
+        this.container.add(backgroundView);
+
+        var foregroundView = new View();
+
+        window.head = foregroundView;
+        this.foregroundSurface = new Surface({
+            content: '<img height="' + window.innerHeight + '" src="img/head.png"/>'
+        });
+        this.foregroundModifier = new Modifier({
+            transform: Transform.translate(this.options.start, 0, 10)
+        });
+        foregroundView._add(this.foregroundModifier).add(this.foregroundSurface);
+        this.container.add(foregroundView);
+
+        this.foregroundSurface.pipe(this._eventOutput);
 
         this._add(this.container); 
     }
@@ -42,10 +55,15 @@ define(function(require, exports, module) {
             duration: 3000,
             curve: 'easeInOut'
         });
+        this.foregroundModifier.setTransform(Transform.translate(this.options.end, 0, 10), {
+            duration: 3000,
+            curve: 'easeInOut'
+        });
     }
 
     PageView.prototype.resetTransition = function() {
         this.backgroundModifier.setTransform(Transform.translate(this.options.start, 0, 0));
+        // this.foregroundModifier.setTransform(Transform.translate(this.options.start, 0, 10));
     }
 
     module.exports = PageView;

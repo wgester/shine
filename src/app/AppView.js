@@ -52,7 +52,7 @@ define(function(require, exports, module) {
         }
         this.pageSwipe.sequenceFrom(this.pages);
         this._add(this.pageSwipe);
-    }
+    };
 
     function _addFacebookOverlay() {
         var facebook = new Surface({
@@ -82,7 +82,7 @@ define(function(require, exports, module) {
 
     function _addTextOverlay() {
         this.shine = new Surface({
-            size: [0,0],
+            size: [undefined,20],
             content: 'SHINE',
             properties: {
                 fontFamily: 'Comic Sans, Comic Sans MS, cursive',
@@ -91,9 +91,11 @@ define(function(require, exports, module) {
             }
         });
         this.shineModifier = new Modifier({
-            transform: Transform.translate(8, 20, 0)
+            transform: Transform.translate(8, 20, 1)
         });
-        this._add(this.shineModifier).add(this.shine);
+        
+        var node = this._add(this.shineModifier).add(this.shine);
+        window.shineText = node;
 
         var account = new Surface({
             size: [undefined,0],
@@ -144,14 +146,14 @@ define(function(require, exports, module) {
             setTimeout(function(){
                 if (this.pages[index + 1]) this.pages[index + 1].resetTransition();
             }.bind(this), 350);
-            this.shineModifier.setTransform(Transform.translate(8 + 20 * index, 20, 0), {
+            this.shineModifier.setTransform(Transform.translate(8 + 20 * index, 20, 1), {
                 duration: 2000
             });
         } else if (index > this.prevIndex) {
             setTimeout(function(){
                 if (this.pages[index - 1]) this.pages[index - 1].resetTransition();
             }.bind(this), 350);
-            this.shineModifier.setTransform(Transform.translate(8 + 20 * index, 20, 0), {
+            this.shineModifier.setTransform(Transform.translate(8 + 20 * index, 20, 1), {
                 duration: 2000
             });
         }
