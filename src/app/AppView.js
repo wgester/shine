@@ -12,6 +12,8 @@ define(function(require, exports, module) {
         this.pages = [];
 
         _createPageViews.call(this);
+        _addFacebookOverlay.call(this);
+        _addEmailOverlay.call(this);
         _pageSwipeEventHandler.call(this);
     }
 
@@ -41,9 +43,39 @@ define(function(require, exports, module) {
         this._add(this.pageSwipe);
     }
 
+    function _addFacebookOverlay() {
+        var facebook = new Surface({
+            content: '<img height="50" width="120" src="img/facebook.png"/>',
+            size: [50,120]
+            });
+        var facebookModifier = new Modifier({
+            transform: Transform.translate(170, 470, 0)
+        })
+        this._add(facebookModifier).add(facebook);
+    };
+
+    function _addEmailOverlay() {
+        var email = new Surface({
+            content: '<img height="50" width="120" src="img/email.png"/>',
+            size: [50,120]
+            });
+        var emailModifier = new Modifier({
+            transform: Transform.translate(28, 470, 0)
+        })
+        this._add(emailModifier).add(email);
+    };
+
     function _pageSwipeEventHandler() {
-        this.pageSwipe.eventOutput.on('pageChange', function() {console.log('swipe')});
-    }
+        this.pageSwipe.eventOutput.on('pageChange', _transitionBackground.bind(this));
+    };
+
+    function _transitionBackground(index) {
+        this.pages[index].transition();
+        setTimeout(function(){
+            if (this.pages[index - 1]) this.pages[index - 1].resetTransition();
+            if (this.pages[index + 1]) this.pages[index + 1].resetTransition();
+        }.bind(this), 350);
+    };
 
     module.exports = AppView;
 });

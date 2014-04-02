@@ -167,7 +167,6 @@ define(function(require, exports, module) {
         if(this.touchCount == 0 && !this._springAttached && !this._onEdge) {
             if(this.options.paginated) {
                 var nodeSize = this.node.getSize ? this.node.getSize() : this._contextSize;
-                // parameters to determine when to switch
 
                 var posNext = this.getPosition() >= 0.5*_sizeForDir.call(this, nodeSize);
                 var posPrev = this.getPosition() <= -0.5*_sizeForDir.call(this, nodeSize);
@@ -175,7 +174,6 @@ define(function(require, exports, module) {
                 if(posNext) this.goToNextPage();
                 else if(posPrev) this.goToPreviousPage();
                 else _attachPageSpring.call(this);
-                // no need to handle prev case since the origin is already the 'previous' page
             }
         }
     }
@@ -450,7 +448,7 @@ define(function(require, exports, module) {
         _handlePagination.call(this);
 
         if(this.options.paginated && (this._lastFrameNode !== this.node)) {
-            this.eventOutput.emit('pageChange');
+            this.eventOutput.emit('pageChange', this.node.index);
             this._lastFrameNode = this.node;
         }
 

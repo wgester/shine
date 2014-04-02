@@ -38,7 +38,10 @@ define(function(require, exports, module) {
     }
 
     PageView.prototype.transition = function(){
-        this.backgroundModifier.setTransform(Transform.translate(this.options.end, 0, 0), {duration: 3000});
+        this.backgroundModifier.setTransform(Transform.translate(this.options.end, 0, 0), {
+            duration: 3000,
+            curve: 'easeInOut'
+        });
     }
 
     PageView.prototype.resetTransition = function() {
