@@ -8,6 +8,6 @@ define(function(require, exports, module) {
     
     var appView = new AppView();
     mainContext.add(appView);
-    mainContext.setPerspective(1000);      
+    // mainContext.setPerspective(1000);      
 
 });

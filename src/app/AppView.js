@@ -34,7 +34,7 @@ define(function(require, exports, module) {
         3: 'Crafted from solid aluminum,<br>Shine is ready for wherever life takes you.'
     };
 
-    var images = [['img/svelteMan.png', -140, -480], ['img/swimmer.png', 0, -310], ['img/soccerPlayer.png', -70, -315], ['img/breakDancer.png', 0, -220]];
+    var images = [['img/svelteMan', -140, -480], ['img/swimmer', 0, -310], ['img/soccerPlayer', -70, -315], ['img/breakDancer', 0, -220]];
 
     function _createPageViews() {
         this.pageSwipe = new PageSwipe({
@@ -115,20 +115,20 @@ define(function(require, exports, module) {
         });
         this._add(accountModifier).add(account);
 
-        var text = new Surface({
+        this.text = new Surface({
             size: [undefined,0],
             content: stories[0],
             properties: {
                 fontFamily: 'Comic Sans, Comic Sans MS, cursive',
-                fontSize: '1em',
+                fontSize: '0.8em',
                 color:'white',
                 textAlign: 'center'
             }
         });
-        var textModifier = new Modifier({
+        this.textModifier = new Modifier({
             transform: Transform.translate(0, 410, 0)
         });
-        this._add(textModifier).add(text);
+        this._add(this.textModifier).add(this.text);
     };
 
     function _addNavbar() {
@@ -160,6 +160,10 @@ define(function(require, exports, module) {
                 duration: 2000
             });
         }
+        this.textModifier.setOpacity(0, 200, function(index) {
+            this.text.setContent(stories[index]);
+            this.textModifier.setOpacity(1, 200);
+        }.bind(this, index));
         this.pages[index].transition();
         this.prevIndex = index;
     };
