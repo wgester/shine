@@ -136,8 +136,11 @@ define(function(require, exports, module) {
             content: '<img width="' + window.innerWidth + '" src="img/navbar.png"/>',
             size: [undefined,20]
             });
+        var navbarModifier = new Modifier({
+            transform: Transform.translate(0,0,3)
+        });
     
-        this._add(navbar);
+        this._add(navbarModifier).add(navbar);
     };
 
     function _pageSwipeEventHandler() {
