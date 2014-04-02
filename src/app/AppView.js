@@ -10,10 +10,12 @@ define(function(require, exports, module) {
     function AppView() {
         View.apply(this, arguments);
         this.pages = [];
+        this.prevIndex = 0;
 
         _createPageViews.call(this);
         _addFacebookOverlay.call(this);
         _addEmailOverlay.call(this);
+        _addTextOverlay.call(this);
         _pageSwipeEventHandler.call(this);
     }
 
@@ -50,7 +52,8 @@ define(function(require, exports, module) {
             });
         var facebookModifier = new Modifier({
             transform: Transform.translate(170, 470, 0)
-        })
+        });
+        console.log('add border-radius')
         this._add(facebookModifier).add(facebook);
     };
 
@@ -61,8 +64,31 @@ define(function(require, exports, module) {
             });
         var emailModifier = new Modifier({
             transform: Transform.translate(28, 470, 0)
-        })
+        });
         this._add(emailModifier).add(email);
+    };
+
+    function _addTextOverlay() {
+        this.shine = new Surface({
+            size: [0,0],
+            content: 'SHINE',
+            properties: {
+                fontFamily: 'Comic Sans, Comic Sans MS, cursive',
+                fontSize: '4em',
+                color:'white'
+            }
+        });
+        this.shineModifier = new Modifier({
+            transform: Transform.translate(8, 20, 0)
+        });
+        this._add(this.shineModifier).add(this.shine);
+    };
+
+    function _shineTransition() {
+        this.shineModifier.setTransform(Transform.translate(20, 0, 0), {
+            duration: 3000,
+            curve: 'easeInOut'
+        });
     };
 
     function _pageSwipeEventHandler() {
@@ -70,11 +96,17 @@ define(function(require, exports, module) {
     };
 
     function _transitionBackground(index) {
+        if (this.prevIndex > index) {
+            setTimeout(function(){
+                if (this.pages[index - 1]) this.pages[index - 1].resetTransition();
+            }.bind(this), 350);
+        } else if (index < this.prevIndex) {
+            setTimeout(function(){
+                if (this.pages[index + 1]) this.pages[index + 1].resetTransition();
+            }.bind(this), 350);
+        }
         this.pages[index].transition();
-        setTimeout(function(){
-            if (this.pages[index - 1]) this.pages[index - 1].resetTransition();
-            if (this.pages[index + 1]) this.pages[index + 1].resetTransition();
-        }.bind(this), 350);
+        this.prevIndex = index;
     };
 
     module.exports = AppView;
