@@ -16,13 +16,22 @@ define(function(require, exports, module) {
         _addFacebookOverlay.call(this);
         _addEmailOverlay.call(this);
         _addTextOverlay.call(this);
+        _addNavbar.call(this);
         _pageSwipeEventHandler.call(this);
+        this.pages[0].transition();
     }
 
     AppView.prototype = Object.create(View.prototype);
     AppView.prototype.constructor = AppView;
 
     AppView.DEFAULT_OPTIONS = {};
+
+    var stories = {
+        0:'An elegant personal activity tracker<br>you can wear anywhere.',
+        1: 'Walk, cycle, swim or sleep,<br>Shine tracks your activity level.',
+        2: 'Use the app to see activity trends and watch<br>yourself improve over time.',
+        3: 'Crafted from solid aluminum,<br>Shine is ready for wherever life takes you.'
+    };
 
     var images = [['img/svelteMan.png', -140, -480], ['img/swimmer.png', 0, -310], ['img/soccerPlayer.png', -70, -315], ['img/breakDancer.png', 0, -220]];
 
@@ -60,8 +69,11 @@ define(function(require, exports, module) {
     function _addEmailOverlay() {
         var email = new Surface({
             content: '<img height="50" width="120" src="img/email.png"/>',
-            size: [50,120]
-            });
+            size: [50,120],
+            properties: {
+                borderRadius: '3px'
+            }
+        });
         var emailModifier = new Modifier({
             transform: Transform.translate(28, 470, 0)
         });
@@ -82,13 +94,45 @@ define(function(require, exports, module) {
             transform: Transform.translate(8, 20, 0)
         });
         this._add(this.shineModifier).add(this.shine);
+
+        var account = new Surface({
+            size: [undefined,0],
+            content: 'Already have an account? <b>Sign in now.</b>',
+            properties: {
+                fontFamily: 'Comic Sans, Comic Sans MS, cursive',
+                fontSize: '1em',
+                color:'white',
+                textAlign: 'center'
+            }
+        });
+        var accountModifier = new Modifier({
+            transform: Transform.translate(0, 530, 0)
+        });
+        this._add(accountModifier).add(account);
+
+        var text = new Surface({
+            size: [undefined,0],
+            content: stories[0],
+            properties: {
+                fontFamily: 'Comic Sans, Comic Sans MS, cursive',
+                fontSize: '1em',
+                color:'white',
+                textAlign: 'center'
+            }
+        });
+        var textModifier = new Modifier({
+            transform: Transform.translate(0, 410, 0)
+        });
+        this._add(textModifier).add(text);
     };
 
-    function _shineTransition() {
-        this.shineModifier.setTransform(Transform.translate(20, 0, 0), {
-            duration: 3000,
-            curve: 'easeInOut'
-        });
+    function _addNavbar() {
+        var navbar = new Surface({
+            content: '<img width="' + window.innerWidth + '" src="img/navbar.png"/>',
+            size: [undefined,20]
+            });
+    
+        this._add(navbar);
     };
 
     function _pageSwipeEventHandler() {
@@ -98,12 +142,18 @@ define(function(require, exports, module) {
     function _transitionBackground(index) {
         if (this.prevIndex > index) {
             setTimeout(function(){
-                if (this.pages[index - 1]) this.pages[index - 1].resetTransition();
-            }.bind(this), 350);
-        } else if (index < this.prevIndex) {
-            setTimeout(function(){
                 if (this.pages[index + 1]) this.pages[index + 1].resetTransition();
             }.bind(this), 350);
+            this.shineModifier.setTransform(Transform.translate(8 + 20 * index, 20, 0), {
+                duration: 2000
+            });
+        } else if (index > this.prevIndex) {
+            setTimeout(function(){
+                if (this.pages[index - 1]) this.pages[index - 1].resetTransition();
+            }.bind(this), 350);
+            this.shineModifier.setTransform(Transform.translate(8 + 20 * index, 20, 0), {
+                duration: 2000
+            });
         }
         this.pages[index].transition();
         this.prevIndex = index;
